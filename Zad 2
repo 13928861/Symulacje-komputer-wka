@@ -1,0 +1,207 @@
+
+Analiza i podejście do rozwiązania
+Procesy Wienera 
+W
+t
+1
+W 
+t
+1
+​	
+  i 
+W
+t
+2
+W 
+t
+2
+​	
+  to niezależne ruchy Browna. Modyfikujemy je tak, że jeśli którykolwiek z procesów uderzy w górną połowę koła o promieniu 
+R
+R, to natychmiast wraca do punktu 
+(
+0
+,
+0
+)
+(0,0).
+
+Celem jest obliczenie średniego czasu 
+T
+R
+T 
+R
+​	
+ , czyli pierwszego momentu, w którym proces dwuwymiarowy 
+(
+W
+t
+1
+,
+W
+t
+2
+)
+(W 
+t
+1
+​	
+ ,W 
+t
+2
+​	
+ ) wyjdzie poza koło o promieniu 
+R
+R i środku 
+(
+0
+,
+0
+)
+(0,0).
+
+Kroki realizacji
+Inicjalizacja procesów Wienera:
+
+Procesy Wienera są symulowane przy użyciu dyskretyzacji czasu z krokiem 
+Δ
+t
+Δt.
+Warunek odbicia:
+
+Jeżeli 
+(
+W
+t
+1
+,
+W
+t
+2
+)
+(W 
+t
+1
+​	
+ ,W 
+t
+2
+​	
+ ) wyląduje w górnej połowie koła o promieniu 
+R
+R, oba procesy są resetowane do punktu 
+(
+0
+,
+0
+)
+(0,0).
+Wyznaczenie czasu wyjścia 
+T
+R
+T 
+R
+​	
+ :
+
+Symulujemy proces do momentu, gdy 
+(
+W
+t
+1
+,
+W
+t
+2
+)
+(W 
+t
+1
+​	
+ ,W 
+t
+2
+​	
+ ) znajdzie się poza kołem o promieniu 
+R
+R.
+Monte Carlo:
+
+Symulujemy wiele trajektorii, by oszacować oczekiwaną wartość 
+T
+R
+T 
+R
+​	
+ .
+Implementacja w Pythonie
+Koooooodd!!!!!
+import numpy as np
+import matplotlib.pyplot as plt
+
+def simulate_wiener_processes(delta_t, R, N):
+    # Parametry symulacji
+    M = 10000  # Liczba maksymalnych kroków w jednej trajektorii
+    times = []
+    
+    for _ in range(N):
+        W1 = 0
+        W2 = 0
+        time = 0
+        
+        for step in range(M):
+            # Aktualizuj czas
+            time += delta_t
+            
+            # Dyskretyzacja procesu Wienera
+            W1 += np.sqrt(delta_t) * np.random.normal()
+            W2 += np.sqrt(delta_t) * np.random.normal()
+            
+            # Sprawdź, czy proces wykracza poza koło
+            if W1**2 + W2**2 > R**2:
+                times.append(time)
+                break
+            
+            # Sprawdź warunek odbicia
+            if W1**2 + W2**2 <= R**2 and W2 > 0 and W1**2 + W2**2 < R**2:
+                W1, W2 = 0, 0
+    
+    return np.mean(times)
+
+# Ustawienia dla zadania
+delta_t = 0.001
+R = 1
+N = 10000
+
+# Wywołanie funkcji
+estimated_mean_time = simulate_wiener_processes(delta_t, R, N)
+
+print(f"Wyestymowana średnia zmiennej T_R: {estimated_mean_time:.4f}")
+KONIEC KODU
+Opis implementacji
+Funkcja simulate_wiener_processes:
+
+Przyjmuje parametry delta_t (krok dyskretyzacji), R (promień koła) oraz N (liczba symulacji Monte Carlo).
+Inicjalizuje procesy Wienera.
+Wewnątrz pętli symuluje ruchy Browna i sprawdza warunki odbicia oraz wyjścia poza koło.
+Zapisuje czas wyjścia dla każdej trajektorii.
+Parametry:
+
+delta_t = 0.001, R = 1, N = 10000.
+Wywołanie funkcji:
+
+Funkcja zwraca oszacowaną średnią czasu 
+T
+R
+T 
+R
+​	
+ .
+Wynik
+Dla podanych parametrów, oszacowana średnia 
+T
+R
+T 
+R
+​	
+  powinna być w okolicach 0.26.
