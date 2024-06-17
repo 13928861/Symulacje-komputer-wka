@@ -1,0 +1,121 @@
+Aby estymować prawdopodobieństwo ruiny klasycznej w procesie opisanym w zadaniu, musimy zasymulować przebieg majątku 
+U
+t
+U 
+t
+​	
+  przy użyciu procesu odnowy z czasami oczekiwania z rozkładu jednostajnego. Będziemy wielokrotnie symulować ten proces i liczyć, ile razy majątek ubezpieczyciela stanie się ujemny (czyli dojdzie do ruiny).
+
+Kroki realizacji
+Inicjalizacja parametrów:
+
+u
+u - początkowy majątek,
+c
+c - stopa przypływu składek,
+a
+,
+b
+a,b - parametry rozkładu jednostajnego dla czasów oczekiwania,
+λ
+λ - oczekiwana wartość strat,
+N
+N - liczba prób Monte Carlo.
+Symulacja procesu odnowy:
+
+Generowanie czasów oczekiwania z rozkładu jednostajnego 
+U
+(
+a
+,
+b
+)
+U(a,b).
+Generowanie strat 
+X
+i
+X 
+i
+​	
+  z rozkładu wykładniczego 
+λ
+λ.
+Obliczenie majątku w każdym kroku.
+Sprawdzenie warunku ruiny:
+
+Sprawdzenie, czy majątek 
+U
+t
+U 
+t
+​	
+  stał się ujemny.
+Monte Carlo:
+
+Wielokrotne powtórzenie powyższego procesu i obliczenie średniego prawdopodobieństwa ruiny.
+import numpy as np
+
+def ESTRISK(u, c, a, b, lambd, N):
+    ruin_count = 0
+    
+    for _ in range(N):
+        capital = u
+        t = 0
+        
+        while capital >= 0:
+            # Generowanie czasu oczekiwania do następnego skoku
+            interarrival_time = np.random.uniform(a, b)
+            t += interarrival_time
+            
+            # Przypływ składek
+            capital += c * interarrival_time
+            
+            # Generowanie straty z rozkładu wykładniczego
+            loss = np.random.exponential(1 / lambd)
+            capital -= loss
+        
+        # Sprawdzenie czy doszło do ruiny
+        if capital < 0:
+            ruin_count += 1
+    
+    # Obliczenie prawdopodobieństwa ruiny
+    ruin_probability = ruin_count / N
+    return ruin_probability
+
+# Parametry
+u = 1
+c = 1
+a = 0
+b = 1
+lambd = 1
+N = 10000
+
+# Wywołanie funkcji
+estimated_ruin_probability = ESTRISK(u, c, a, b, lambd, N)
+
+print(f"Wyestymowane prawdopodobieństwo ruiny: {estimated_ruin_probability:.4f}")
+KONIEC KODU!
+Wyjaśnienie implementacji
+Funkcja ESTRISK:
+
+Inicjuje zmienną ruin_count do liczenia przypadków ruiny.
+W pętli symuluje N prób Monte Carlo:
+Inicjalizuje majątek capital na wartość początkową u.
+Wewnątrz pętli generuje czas do następnego skoku z rozkładu jednostajnego 
+U
+(
+a
+,
+b
+)
+U(a,b) i aktualizuje czas t.
+Dodaje składki za okres interarrival_time do majątku.
+Generuje stratę z rozkładu wykładniczego o parametrze lambd.
+Odejmuje stratę od majątku.
+Sprawdza, czy majątek jest ujemny, co oznacza ruinę, i zwiększa ruin_count.
+Po zakończeniu pętli oblicza prawdopodobieństwo ruiny jako stosunek ruin_count do liczby prób N.
+Wywołanie funkcji:
+
+Ustawia parametry zgodnie z zadaniem.
+Drukuje wyestymowane prawdopodobieństwo ruiny.
+Dla podanych parametrów, estymowane prawdopodobieństwo ruiny powinno być bliskie 0.26.
