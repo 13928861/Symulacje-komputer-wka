@@ -1,0 +1,336 @@
+Zmienna losowa 
+X
+X ma funkcję masy prawdopodobieństwa określoną wzorem:
+p
+(
+k
+)
+=
+1
+k
+(
+k
++
+1
+)
+,
+k
+=
+1
+,
+2
+,
+…
+p(k)= 
+k(k+1)
+1
+​	
+ ,k=1,2,…
+
+Znalezienie dystrybuanty 
+F
+(
+k
+)
+F(k)
+Zacznijmy od obliczenia dystrybuanty 
+F
+(
+k
+)
+F(k).
+
+Dystrybuanta 
+F
+(
+k
+)
+F(k) to suma prawdopodobieństw do 
+k
+k:
+F
+(
+k
+)
+=
+∑
+i
+=
+1
+k
+p
+(
+i
+)
+=
+∑
+i
+=
+1
+k
+1
+i
+(
+i
++
+1
+)
+F(k)=∑ 
+i=1
+k
+​	
+ p(i)=∑ 
+i=1
+k
+​	
+  
+i(i+1)
+1
+​	
+ 
+
+Wykorzystując własności sumy teleskopowej, obliczamy:
+1
+i
+(
+i
++
+1
+)
+=
+1
+i
+−
+1
+i
++
+1
+i(i+1)
+1
+​	
+ = 
+i
+1
+​	
+ − 
+i+1
+1
+​	
+ 
+
+Zatem:
+F
+(
+k
+)
+=
+∑
+i
+=
+1
+k
+(
+1
+i
+−
+1
+i
++
+1
+)
+F(k)=∑ 
+i=1
+k
+​	
+ ( 
+i
+1
+​	
+ − 
+i+1
+1
+​	
+ )
+
+To jest suma teleskopowa, której wynik wynosi:
+F
+(
+k
+)
+=
+1
+−
+1
+k
++
+1
+F(k)=1− 
+k+1
+1
+​	
+ 
+
+Czyli dystrybuanta 
+F
+(
+k
+)
+F(k) jest równa:
+F
+(
+k
+)
+=
+1
+−
+1
+k
++
+1
+F(k)=1− 
+k+1
+1
+​	
+ 
+
+Odwrotność dystrybuanty
+Aby użyć metody odwrotnej dystrybuanty, najpierw odwracamy funkcję 
+F
+F:
+u
+=
+1
+−
+1
+k
++
+1
+u=1− 
+k+1
+1
+​	
+ 
+1
+−
+u
+=
+1
+k
++
+1
+1−u= 
+k+1
+1
+​	
+ 
+k
++
+1
+=
+1
+1
+−
+u
+k+1= 
+1−u
+1
+​	
+ 
+k
+=
+⌈
+1
+1
+−
+u
+−
+1
+⌉
+k=⌈ 
+1−u
+1
+​	
+ −1⌉
+
+Teraz możemy napisać funkcję 
+GEN
+(
+N
+)
+GEN(N), która wygeneruje 
+N
+N próbek zmiennej losowej 
+X
+X.
+POCZATEK KODU!!!!!!
+import numpy as np
+import matplotlib.pyplot as plt
+
+def GEN(N):
+    u = np.random.uniform(0, 1, N)
+    samples = np.ceil(1 / (1 - u) - 1).astype(int)
+    return samples
+
+# Generowanie próby wielkości N=10^4
+N = 10000
+samples = GEN(N)
+
+# Tworzenie histogramu
+plt.hist(samples, bins=range(1, max(samples)+1), density=True, alpha=0.6, color='g', label='Histogram')
+
+# Obliczenie teoretycznej funkcji masy prawdopodobieństwa
+k = np.arange(1, max(samples)+1)
+p_k = 1 / (k * (k + 1))
+
+# Porównanie z teoretyczną funkcją masy prawdopodobieństwa
+plt.plot(k, p_k, 'r-', label='Teoretyczna pmf')
+
+# Dodanie opisów
+plt.xlabel('Wartość')
+plt.ylabel('Prawdopodobieństwo')
+plt.title('Histogram próby i teoretyczna funkcja masy prawdopodobieństwa')
+plt.legend()
+
+# Wyświetlenie wykresu
+plt.show()
+KONIEC KODU 
+Opis
+Funkcja GEN(N) generuje próbę wielkości 
+N
+N zmiennych losowych 
+X
+X korzystając z metody odwrotnej dystrybuanty.
+Generujemy 
+N
+=
+1
+0
+4
+N=10 
+4
+  próbek zmiennej 
+X
+X.
+Tworzymy histogram wygenerowanych próbek.
+Porównujemy histogram z teoretyczną funkcją masy prawdopodobieństwa 
+p
+(
+k
+)
+=
+1
+k
+(
+k
++
+1
+)
+p(k)= 
+k(k+1)
+1
+​	
+ .
+Dodajemy odpowiednie opisy na wykresie, aby wizualizacja była czytelna.
+Ten kod powinien poprawnie wygenerować próbki zmiennej 
+X
+X oraz porównać je z teoretyczną funkcją masy prawdopodobieństwa na wykresie histogramu.
