@@ -1,0 +1,22 @@
+import qrcode
+
+# Dane, które mają być zakodowane w kodzie QR
+data = "https://www.example.com"
+
+# Tworzenie instancji obiektu QRCode
+qr = qrcode.QRCode(
+    version=1,  # Wersja kodu QR, kontroluje rozmiar kodu. Większa wersja = większy kod.
+    error_correction=qrcode.constants.ERROR_CORRECT_L,  # Poziom korekcji błędów
+    box_size=10,  # Rozmiar każdego "pudełka" w kodzie QR
+    border=4,  # Grubość ramki (liczba pudełek)
+)
+
+# Dodanie danych do kodu QR
+qr.add_data(data)
+qr.make(fit=True)
+
+# Tworzenie obrazu kodu QR
+img = qr.make_image(fill='black', back_color='white')
+
+# Zapisanie obrazu do pliku
+img.save("qrcode.png")
